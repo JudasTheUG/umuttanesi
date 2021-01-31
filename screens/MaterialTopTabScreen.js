@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ProfileScreen from './ProfileScreen';
 import RequestScreen from './RequestScreen';
 import EarthQuakeScreen from './EarthQuakeScreen';
-import MapScreen from './MapScreen';
+import MatchScreen from './MatchScreen';
 import SecondStackScreen from './SecondStackScreen';
 
 
@@ -18,7 +18,7 @@ const MaterialTopTabScreen = ({navigation}) =>(
       <Tab.Navigator
         initialRouteName="Feed"
         tabBarOptions={{
-          activeTintColor: '#e91e63',
+          activeTintColor: 'darkblue',
           labelStyle: { fontSize: 12 },
           style: { backgroundColor: 'orange' },
           showIcon: true,
@@ -30,7 +30,7 @@ const MaterialTopTabScreen = ({navigation}) =>(
                 Profil: 'account',
                 Deprem: 'exclamation-thick',
                 Umut: 'weather-sunset-up',
-                Harita: 'map',
+                Harita: 'gift',
                 Mesaj: 'email',
               };
               
@@ -39,7 +39,7 @@ const MaterialTopTabScreen = ({navigation}) =>(
                 <StatusBar backgroundColor='orange' barStyle="light-content" />
                 <MaterialCommunityIcons
                   name={icons[route.name]}
-                  color={'black'}
+                  color={'darkblue'}
                   size={26}
                 />
                 </View>
@@ -56,7 +56,7 @@ const MaterialTopTabScreen = ({navigation}) =>(
         <Tab.Screen
           name="Deprem"
           component={EarthQuakeScreen}
-          options={{ tabBarLabel: 'Deprem' }}
+          options={{ tabBarLabel: 'Deprem',backgroundColor: 'orange'}}
         />
         <Tab.Screen
           name="Umut"
@@ -65,7 +65,7 @@ const MaterialTopTabScreen = ({navigation}) =>(
         />
         <Tab.Screen
           name="Harita"
-          component={MapScreen}
+          component={MatchScreen}
           options={{ tabBarLabel: 'Harita' }}
         />
           <Tab.Screen

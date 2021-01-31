@@ -46,18 +46,20 @@ const ForgotPasswordScreen = ({navigation}) =>{
 
     const yeniSifre = () =>{
     if(data.email!=''){
-        axios.get('http://192.168.1.33/api/Users/forgotPassword?email='+data.email)
+        axios.get('http://192.168.1.38/api/Users/forgotPassword?email='+data.email)
         .then((response)=>{
             console.log(response.data);
-            /*TODO false => geçerli email adresi giriniz
-                    true => emailinize şifre yollanmıştır
-            */
+            if (response.data) {
+                Alert.alert('İşlem Başarılı','Şifreniz email adresinize yollanmıştır',[{text:'Tamam',onPress: ()=>null}])
+            }else{
+                Alert.alert('Hata!','Girilen email adresi sistemde bulunmamaktadır.',[{text:'Tamam',onPress: ()=>null}])
+            }
         })
         .catch((error) => {
             console.log(error)
         })
     }else{
-        /*TODO Alan boş bıraklamaz */
+        Alert.alert('Hata!','Alan boş bırakılamaz',[{text:'Tamam',onPress: ()=>null}])
     }
     }
 
@@ -85,6 +87,7 @@ const ForgotPasswordScreen = ({navigation}) =>{
                     <TextInput
                         placeholder="Üye Olduğunuz e-mail adresinizi giriniz"
                         style={styles.textInput}
+                        keyboardType='email-address'
                         autoCapitalize="none"
                         onChangeText={(val) => textInputChange(val)}
                     />

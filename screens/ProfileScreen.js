@@ -154,7 +154,7 @@ const ProfileScreen = ({route,navigation}) => {
                     userPassword:data.newPassword,
                 })
 
-                axios.post('http://192.168.1.33/api/Users/UpdateUserPost',
+                axios.post('http://192.168.1.38/api/Users/UpdateUserPost',
                 {  
                     userId:putData.userId,
                     userName:putData.userName,
@@ -167,16 +167,16 @@ const ProfileScreen = ({route,navigation}) => {
                     
                 })
                 .then((response)=>{
-        
+                    logout();
                 })
                 .catch((error) => {
                     console.log(error)
                 })
             }else{
-                /*TODO Mesaj Şifreler aynı değil*/
+                Alert.alert('Hata!','Girilen şifreler uyuşmamaktadır',[{text:'Tamam',onPress: ()=>null}])
             }
         }else{
-            axios.post('http://192.168.1.33/api/Users/UpdateUserPost',
+            axios.post('http://192.168.1.38/api/Users/UpdateUserPost',
                 {  
                     userId:putData.userId,
                     userName:putData.userName,
@@ -189,7 +189,7 @@ const ProfileScreen = ({route,navigation}) => {
                     
                 })
                 .then((response)=>{
-        
+                    logout();
                 })
                 .catch((error) => {
                     console.log(error)
@@ -200,7 +200,7 @@ const ProfileScreen = ({route,navigation}) => {
 
     const logout = () => {
         ConstantClass.myId=0;
-        navigation.goBack();
+        navigation.navigate('LoginScreen');
     }
 
     if(ConstantClass.myId==0)
@@ -219,7 +219,7 @@ const ProfileScreen = ({route,navigation}) => {
     
     return(
         <View style={styles.container}> 
-            <StatusBar backgroundColor='orange' barStyle="light-content" />
+        <StatusBar backgroundColor='orange' barStyle="light-content" />
             <View style={styles.header}>
                 <Text style={styles.text_header}>Profil</Text>
             </View>
@@ -268,6 +268,7 @@ const ProfileScreen = ({route,navigation}) => {
                         placeholder="Cep Telefonu Numaranız"
                         value={putData.mobile}
                         style={styles.textInput}
+                        keyboardType='phone-pad'
                         autoCapitalize="none"
                         onChangeText={(mob)=>updateMobile(mob)}
                     />
@@ -326,6 +327,7 @@ const ProfileScreen = ({route,navigation}) => {
                         placeholder="E-mail Adresiniz"
                         value={putData.email}
                         style={styles.textInput}
+                        keyboardType='email-address'
                         autoCapitalize="none"
                         onChangeText={(mail) =>updateEmail(mail)}
                     />
@@ -354,6 +356,7 @@ const ProfileScreen = ({route,navigation}) => {
                         value={data.newPassword}
                         secureTextEntry={data.secureTextEntry ? true : false}
                         style={styles.textInput}
+                        maxLength={8}
                         autoCapitalize="none"
                         onChangeText={(val) => PasswordChangeHandler(val)}
                     />
@@ -391,6 +394,7 @@ const ProfileScreen = ({route,navigation}) => {
                         value={data.confirm_password}
                         secureTextEntry={data.confirm_secureTextEntry ? true : false}
                         style={styles.textInput}
+                        maxLength={8}
                         autoCapitalize="none"
                         onChangeText={(val) => PasswordConfirmChangeHandler(val)}
                     />
@@ -422,7 +426,7 @@ const ProfileScreen = ({route,navigation}) => {
                     style={styles.signIn}
                     >
                         <TouchableOpacity
-                        onPress={()=>{bilgilerimiGuncelle();logout();}}
+                        onPress={()=>bilgilerimiGuncelle()}
                         >
                         <Text style={[styles.textSign, {color:'#fff'}]}>Bilgilerimi Güncelle</Text>
                         </TouchableOpacity>
@@ -451,18 +455,21 @@ const height_logo = height * 0.29;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 20, 
+        width:wp('100%'),
+        height:hp('100%'),
       backgroundColor: 'orange'
     },
     header: {
-        flex: 1,
-        justifyContent: 'flex-end',
+        width:wp('100%'),
+        height:hp('6%'),
+        justifyContent: 'center',
         paddingHorizontal: wp('4%'),
         paddingBottom: hp('0%'),
-        marginTop: hp('2%'),
+        marginTop: hp('0%'),
     },
     footer: {
-        flex: 19,
+        width:wp('100%'),
+        height:hp('85%'),
         backgroundColor: 'floralwhite',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
@@ -483,11 +490,11 @@ const styles = StyleSheet.create({
     },
     action: {
         flexDirection: 'row',
-        marginTop: hp('0.5%'),
+        marginTop: hp('0%'),
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2',
-        paddingBottom: hp('0.5%'),
-        height:hp('5%'),
+        paddingBottom: hp('0%'),
+        height:hp('5.5%'),
     },
     actionError: {
         flexDirection: 'row',
@@ -508,7 +515,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: hp('2%')
+        marginTop: hp('1%')
     },
     signIn: {
         width: wp('90%'),

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Dimensions, Platform, FlatList, TextInput, TouchableOpacity} from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Platform, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
 const { width } = Dimensions.get('window');
 import { ConstantClass } from '../ConstantFile';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const axios = require('axios');
 
@@ -27,7 +28,7 @@ const MessageLayoutScreen  = ({route,navigation}) => {
   });
 
   const fetchData = () => {
-    axios.get('http://192.168.1.33/api/ChatMessages/Chatters/'+ConstantClass.myId+'?secondId='+route.params.userId)
+    axios.get('http://192.168.1.38/api/ChatMessages/Chatters/'+ConstantClass.myId+'?secondId='+route.params.userId)
     .then((response)=>{
         setChatData(response.data)
     })
@@ -49,21 +50,23 @@ const MessageLayoutScreen  = ({route,navigation}) => {
   }
 
   const sendMessage = () =>{
-
-    axios.post('http://192.168.1.33/api/ChatMessages/PostChatMessage',
+if (sendData.message.length>0)
+{    axios.post('http://192.168.1.38/api/ChatMessages/PostChatMessage',
                 {  
                     sender:sendData.sender,
                     reciver:sendData.reciver,
                     message:sendData.message,          
                 })
                 .then((response)=>{
-        
+                  setSendData({
+                    message:'',
+                  });
                 })
                 .catch((error) => {
                     console.log(error)
                 })
 
-                textInput.current.clear();
+                textInput.current.clear();}
   }
     
 
@@ -71,6 +74,7 @@ const MessageLayoutScreen  = ({route,navigation}) => {
     <View style={styles.container}>
     <View style={styles.messageContainer}>
       {fetchData()}
+      <Text style={styles.border}>{"\n"} {route.params.userName} {route.params.userSurname} {"\n"}</Text>
       <FlatList
         data={chatData}
         renderItem={({item,index}) => 
@@ -82,7 +86,8 @@ const MessageLayoutScreen  = ({route,navigation}) => {
           </View>}
         keyExtractor={(item,index)=> index.toString()}
       />
-      <View style={styles.sideBy}>
+    </View>
+    <View style={styles.sideBy}>
 
 <TextInput
    placeholder="Bir Mesaj Yazın"
@@ -103,8 +108,6 @@ const MessageLayoutScreen  = ({route,navigation}) => {
   </TouchableOpacity>
 
 </View>
-
-    </View>
     </View>
   );
 
@@ -113,14 +116,15 @@ const MessageLayoutScreen  = ({route,navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 10,
-    justifyContent: 'space-between',
+    width: wp('100%'),
+    flex:1
   },
   messageContainer: {
-    flex: 9,
+    width: wp('100%'),
+    height: hp('86%'),
   },
   sideBy: {
-    flex: 1,
+    flex:1,
     flexDirection: 'row',
     alignSelf: 'baseline',
     justifyContent: 'space-between',
@@ -138,23 +142,25 @@ const styles = StyleSheet.create({
     color:'black',
     paddingLeft: '1.5%',
     paddingRight: '1.5%',
-    borderColor: 'black',
+    borderColor: 'salmon',
     borderWidth: 1,
     backgroundColor:'salmon',
     width: 'auto',
     alignSelf:'flex-start',
     borderRadius: 15,
+    marginBottom:hp('0.1%'),
   },
   me: {
     color:'black',
     paddingLeft: '1.5%',
     paddingRight: '1.5%',
-    borderColor: 'black',
+    borderColor: 'lime',
     borderWidth: 1,
     backgroundColor:'lime',
     width: 'auto',
     alignSelf:'flex-end',
     borderRadius: 15,
+    marginBottom:hp('0.1%'),
   },
   textInput: {
     paddingLeft: 10,
@@ -171,6 +177,20 @@ signIn: {
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: 50,
+},
+border: {
+  alignSelf:'center',
+  justifyContent: 'center',
+  alignItems: 'center',
+  textAlign:'center',
+  fontWeight:'bold',
+  color:'black',
+  borderColor: 'orange',
+  borderWidth: 1,
+  backgroundColor:'orange',
+  marginBottom:hp('0.2%'),
+  width:wp('100%'),
+  height:wp('12%'),
 },
 });
 

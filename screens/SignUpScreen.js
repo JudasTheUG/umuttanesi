@@ -1,7 +1,7 @@
   
 import React from 'react';
 import { 
-    View, 
+    View,
     Text, 
     TouchableOpacity,
     Dimensions, 
@@ -19,6 +19,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Moment from 'moment';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const axios = require('axios')
 
@@ -137,7 +138,7 @@ const SignUpScreen = ({navigation}) => {
            data.name.length > 0 && data.surname.length > 0 && data.birthDate.length !='Doğum Tarihinizi Seçiniz'){
             if(data.password==data.confirm_password){
 
-                axios.post('http://192.168.1.33/api/Users/Register',
+                axios.post('http://192.168.1.38/api/Users/Register',
                 {  
                     userName:data.name,
                     userSurname:data.surname,
@@ -149,16 +150,16 @@ const SignUpScreen = ({navigation}) => {
                     
                 })
                 .then((response)=>{
-        
+                    navigation.navigate('LoginScreen')
                 })
                 .catch((error) => {
                     console.log(error)
                 })
             }else{
-                /*TODO Mesaj Şifreler aynı değil*/
+                Alert.alert('Hata!','Girilen şifreler uyuşmamaktadır',[{text:'Tamam',onPress: ()=>null}])
             }
         }else{
-            /*TODO Mesaj Alanlar boş bırakılamaz*/
+            Alert.alert('Hata!','Alanlar boş bırakılamaz',[{text:'Tamam',onPress: ()=>null}])
         }    
 
     }
@@ -211,6 +212,7 @@ const SignUpScreen = ({navigation}) => {
                     <TextInput
                         placeholder="Cep Telefonu Numaranız"
                         style={styles.textInput}
+                        keyboardType= 'phone-pad'
                         autoCapitalize="none"
                         onChangeText={(mob)=>updateMobile(mob)}
                     />
@@ -251,11 +253,6 @@ const SignUpScreen = ({navigation}) => {
                         <Text style={[styles.textSign2, {color:'darkblue'},{paddingLeft:0}]}>{Moment(data.birthDate).format('DD.MM.YYYY')}</Text>
                         }
                         </TouchableOpacity>
-                        {/* <MaterialIcons 
-                        name="keyboard-arrow-up"
-                        color="darkblue"
-                        size={20}
-                    /> */}
                     </LinearGradient>
                     <DateTimePickerModal
                       minimumDate={new Date('1950-01-01')}
@@ -276,6 +273,7 @@ const SignUpScreen = ({navigation}) => {
                     <TextInput
                         placeholder="E-mail Adresiniz"
                         style={styles.textInput}
+                        keyboardType='email-address'
                         autoCapitalize="none"
                         onChangeText={(mail) =>updateEmail(mail)}
                     />
@@ -304,6 +302,7 @@ const SignUpScreen = ({navigation}) => {
                         secureTextEntry={data.secureTextEntry ? true : false}
                         style={styles.textInput}
                         autoCapitalize="none"
+                        maxLength={8}
                         onChangeText={(val) => PasswordChangeHandler(val)}
                     />
                     <TouchableOpacity
@@ -340,6 +339,7 @@ const SignUpScreen = ({navigation}) => {
                         secureTextEntry={data.confirm_secureTextEntry ? true : false}
                         style={styles.textInput}
                         autoCapitalize="none"
+                        maxLength={8}
                         onChangeText={(val) => PasswordConfirmChangeHandler(val)}
                     />
                     <TouchableOpacity
@@ -370,14 +370,14 @@ const SignUpScreen = ({navigation}) => {
                     style={styles.signIn}
                     >
                         <TouchableOpacity
-                        onPress={() => {kayitOl();navigation.goBack()}}
+                        onPress={() => kayitOl()}
                         >
                             <Text style={[styles.textSign, {color:'#fff'}]}>Üye Ol</Text>
                         </TouchableOpacity>
                         
                     </LinearGradient>
                     <TouchableOpacity
-                        onPress={() => navigation.goBack()}
+                        onPress={() => navigation.navigate('LoginScreen')}
                         style={[styles.signIn, {
                             borderColor: 'navy',
                             borderWidth: 1,
@@ -399,18 +399,21 @@ const height_logo = height * 0.29;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 20, 
-      backgroundColor: 'darkorange'
+        width:wp('100%'),
+        height:hp('100%'),
+      backgroundColor: 'orange',
     },
     header: {
-        flex: 1,
-        justifyContent: 'flex-end',
+        width:wp('100%'),
+        height:hp('6%'),
+        justifyContent: 'center',
         paddingHorizontal: wp('4%'),
         paddingBottom: hp('0%'),
-        marginTop: hp('2%'),
+        marginTop: hp('0%'),
     },
     footer: {
-        flex: 19,
+        width:wp('100%'),
+        height:hp('94%'),
         backgroundColor: 'floralwhite',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
@@ -431,10 +434,10 @@ const styles = StyleSheet.create({
     },
     action: {
         flexDirection: 'row',
-        marginTop: hp('0.5%'),
+        marginTop: hp('0%'),
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2',
-        paddingBottom: hp('0.5%'),
+        paddingBottom: hp('0%'),
         height:hp('5.5%'),
     },
     actionError: {
@@ -456,7 +459,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: hp('2%')
+        marginTop: hp('1%')
     },
     signIn: {
         width: wp('90%'),

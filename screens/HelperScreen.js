@@ -7,6 +7,7 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
+    Alert,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,10 +18,13 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Moment from 'moment';
 import { ConstantClass } from '../ConstantFile';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const axios = require('axios')
 
 const HelperScreen = ({navigation}) => {
+
+  textInput = React.createRef();
 
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
   const [isDatePickerVisible2, setDatePickerVisibility2] = React.useState(false);
@@ -81,17 +85,22 @@ const HelperScreen = ({navigation}) => {
   
   
       const updateCount = (sayi) => {
-          setHelperData({
-              ...helperData,
-              personCount: Number(sayi),
-          })
-      }
+        if(sayi!='.' && sayi!=',' && sayi!='-' && sayi!=' ' && sayi!='0'){
+            setHelperData({
+            ...helperData,
+            personCount: Number(sayi),
+            })
+        }else{
+            Alert.alert('Hata!','0 dan büyük tam sayı girilmelidir',[{text:'Tamam',onPress: ()=>null}])
+            textInput.current.clear();
+        }
+    }
 
     const yardimEt = () => {
 
         if(helperData.helpType > 0 && helperData.personCount > 0 && helperData.endDate != 'Bitiş Tarihi Seç'){
             
-                axios.post('http://192.168.1.33/api/Requests/PostRequest',
+                axios.post('http://192.168.1.38/api/Requests/PostRequest',
                 {  
                     reqTypeId: helperData.helpType,
                     helpId: 1,
@@ -100,8 +109,6 @@ const HelperScreen = ({navigation}) => {
                     moneyStatus: isMoneyStatus ,
                     ibanStatus: false,
                     mobileStatus: isCeptelStatus,
-                    latitude: null,
-                    longitude: null,
                     beginDate: helperData.beginDate,
                     endDate: helperData.endDate
                     
@@ -114,7 +121,7 @@ const HelperScreen = ({navigation}) => {
                 })
             
         }else{
-            /*TODO Mesaj Alanlar boş bırakılamaz*/
+            Alert.alert('Hata!','Alanlar boş bırakılamaz',[{text:'Tamam',onPress: ()=>null}])
         }    
 
     }
@@ -122,7 +129,7 @@ const HelperScreen = ({navigation}) => {
 
     return(
         <View style={styles.container}>
-            <StatusBar backgroundColor='#009387' barStyle="light-content" />
+            <StatusBar backgroundColor='orange' barStyle="light-content" />
             <View style={styles.header}>
                 <Text style={styles.text_header}>Yardım Et</Text>
             </View>
@@ -132,11 +139,12 @@ const HelperScreen = ({navigation}) => {
                     <FontAwesome
                         name="gift"
                         color="#05375a"
-                        size={20}
+                        size={30}
+                        style={styles.icon}
                     />
                     <Picker
                       selectedValue={helperData.helpType}
-                      style={{width: 350}}
+                      style={[{width: wp('90%')},{color:'darkblue'}]}
                       onValueChange={(itemValue, itemIndex) =>
                       setHelperData({helpType: itemValue})
                     }>
@@ -148,73 +156,77 @@ const HelperScreen = ({navigation}) => {
                     <Picker.Item label="Sağlık" value={5} />
                     </Picker>
                 </View>
-                <Text style={[styles.text_footer, {marginTop: 10 }]}>Kişi Sayısı</Text>
+                <Text style={styles.text_footer}>Kişi Sayısı</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="users"
                         color="#05375a"
                         size={20}
+                        style={styles.icon}
                     />
                     <TextInput
                         placeholder="Kişi Sayısı"
+                        keyboardType = 'numeric'
                         style={styles.textInput}
                         autoCapitalize="none"
+                        ref={textInput}
+                        maxLength={1}
                         onChangeText={(sayi)=>updateCount(sayi)}
                     />
                 </View>
-                <Text style={[styles.text_footer, {marginTop: 10 }]}>Ceptel Göster/Gösterme</Text>
+                <Text style={styles.text_footer}>Ceptel Göster/Gösterme</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="mobile"
                         color="#05375a"
                         size={35}
+                        style={styles.icon}
                     />
-                    <Text style={[styles.textSign, {color:'#009387'},{marginLeft:9},{marginTop:1}]}>Cep telefon numarınız gösterilsin mi?</Text>
+                    <Text style={[styles.textSign, {color:'darkblue'},{marginLeft:10},{marginTop:hp('1.4%')}]}>Cep telefon numarınız gösterilsin mi?</Text>
                     <CheckBox
                         disabled={false}
                         value={isCeptelStatus}
                         onValueChange={showCeptelStatus}
+                        style={{marginTop:hp('1%')}}
                     />
                 </View>
-                <Text style={[styles.text_footer, {marginTop: 10 }]}>Yardımın parasal karşılığı</Text>
+                <Text style={styles.text_footer}>Yardımın parasal karşılığı</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="money"
                         color="#05375a"
                         size={25}
+                        style={styles.icon}
                     />
-                    <Text style={[styles.textSign, {color:'#009387'},{marginLeft:3},{marginTop:1}]}>Yardımın parasal gönderilebilir mi?</Text>
+                    <Text style={[styles.textSign, {color:'darkblue'},{marginLeft:5},{marginTop:hp('1%')}]}>Yardımın parasal gönderilebilir mi?</Text>
                     <CheckBox
                     disabled={false}
                     value={isMoneyStatus}
                     onValueChange={showMoneyStatus}
+                    style={{marginTop:hp('0.6%')}}
                     />
                 </View>
-                <Text style={[styles.text_footer, {marginTop: 10 }]}>Başlangıç Tarihi</Text>
+                <Text style={styles.text_footer}>Başlangıç Tarihi</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="calendar"
                         color="#05375a"
                         size={20}
+                        style={styles.icon}
                     />
                     <LinearGradient
-                    colors={['#08d4c4','#01ab9d']}
+                    colors={['floralwhite','floralwhite']}
                     style={styles.dp}
                     >
                         <TouchableOpacity
                         onPress={()=>showDatePicker()}
                         >
                         {helperData.beginDate == 'Başlangıç Tarihi Seç' ?
-                        <Text style={[styles.textSign, {color:'#fff'},{paddingLeft:0}]}>{helperData.beginDate}</Text>
+                        <Text style={[styles.textSign2, {color:'#8e8e8e'},{paddingLeft:0}]}>{helperData.beginDate}</Text>
                         :
-                        <Text style={[styles.textSign, {color:'#fff'},{paddingLeft:0}]}>{Moment(helperData.beginDate).format('YYYY-MM-DD')}</Text>
+                        <Text style={[styles.textSign2, {color:'darkblue'},{paddingLeft:0}]}>{Moment(helperData.beginDate).format('DD.MM.YYYY')}</Text>
                         }
                         </TouchableOpacity>
-                        <MaterialIcons 
-                        name="keyboard-arrow-up"
-                        color="#fff"
-                        size={20}
-                    />
                     </LinearGradient>
                     <DateTimePickerModal
                       minimumDate={new Date()}
@@ -224,31 +236,27 @@ const HelperScreen = ({navigation}) => {
                       onCancel={()=>hideDatePicker()}
                     />
                 </View>
-                <Text style={[styles.text_footer, {marginTop: 10 }]}>Bitiş Tarihi</Text>
+                <Text style={styles.text_footer}>Bitiş Tarihi</Text>
                 <View style={styles.action}>
                     <FontAwesome
                         name="calendar"
                         color="#05375a"
                         size={20}
+                        style={styles.icon}
                     />
                      <LinearGradient
-                    colors={['#08d4c4','#01ab9d']}
+                    colors={['floralwhite','floralwhite']}
                     style={styles.dp}
                     >
                         <TouchableOpacity
                         onPress={()=>showDatePicker2()}
                         >
                         {helperData.endDate == 'Bitiş Tarihi Seç' ?
-                        <Text style={[styles.textSign, {color:'#fff'},{paddingLeft:0}]}>{helperData.endDate}</Text>
+                        <Text style={[styles.textSign2, {color:'#8e8e8e'},{paddingLeft:0}]}>{helperData.endDate}</Text>
                         :
-                        <Text style={[styles.textSign, {color:'#fff'},{paddingLeft:0}]}>{Moment(helperData.endDate).format('YYYY-MM-DD')}</Text>
+                        <Text style={[styles.textSign2, {color:'darkblue'},{paddingLeft:0}]}>{Moment(helperData.endDate).format('DD.MM.YYYY')}</Text>
                         }
                         </TouchableOpacity>
-                        <MaterialIcons 
-                        name="keyboard-arrow-up"
-                        color="#fff"
-                        size={20}
-                    />
                     </LinearGradient>
                     <DateTimePickerModal
                       minimumDate={helperData.beginDate}
@@ -259,26 +267,27 @@ const HelperScreen = ({navigation}) => {
                     />
                 </View>
                 <View style={styles.button}>
+                    <TouchableOpacity
+                        onPress={() => yardimEt()}
+                        >
                     <LinearGradient
-                    colors={['#08d4c4','#01ab9d']}
+                    colors={['darkblue','orange']}
                     style={styles.signIn}
                     >
-                        <TouchableOpacity
-                        onPress={()=>yardimEt()}
-                        >
-                            <Text style={[styles.textSign, {color:'#fff'}]}>Yardım Ekle</Text>
-                        </TouchableOpacity>
+
+                            <Text style={[styles.textSign, {color:'floralwhite'}]}>Yardım Yolla</Text>
                         
                     </LinearGradient>
+                    </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {console.log(helperData.beginDate);console.log(helperData.endDate)}}
+                        onPress={() => navigation.goBack()}
                         style={[styles.signIn, {
-                            borderColor: '#009387',
+                            borderColor: 'orange',
                             borderWidth: 1,
                             marginTop: 10
                         }]}
                     >
-                        <Text style={[styles.textSign, {color:'#009387'}]}>SecondIntro</Text>
+                        <Text style={[styles.textSign, {color:'darkblue'}]}>Yardım Menü</Text>
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
@@ -290,50 +299,59 @@ export default HelperScreen;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, 
-      backgroundColor: '#009387'
+        width:wp('100%'),
+        height:hp('100%'),
+      backgroundColor: 'orange'
     },
     header: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 10
+        width:wp('100%'),
+        height:hp('6%'),
+        justifyContent: 'center',
+        paddingHorizontal: wp('4%'),
+        paddingBottom: hp('0%'),
+        marginTop: hp('0%'),
     },
     footer: {
-        flex: 19,
-        backgroundColor: '#fff',
+        width:wp('100%'),
+        height:hp('94%'),
+        backgroundColor: 'floralwhite',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingHorizontal: wp('4.2%'),
+        paddingVertical: hp('0%')
     },
     text_header: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 30
+        fontSize: 30,
+        paddingBottom: hp('1%'),
+        alignSelf:'center',
     },
     text_footer: {
-        color: '#05375a',
-        fontSize: 12
+        color: 'darkblue',
+        fontSize: 16,
+        marginTop: hp('0.5%'),
     },
     action: {
         flexDirection: 'row',
-
+        marginTop: hp('0%'),
         borderBottomWidth: 1,
-        borderBottomColor: '#f2f2f2'
+        borderBottomColor: '#f2f2f2',
+        paddingBottom: hp('0%'),
+        height:hp('5.5%'),
     },
     actionError: {
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: hp('1%'),
         borderBottomWidth: 1,
         borderBottomColor: '#FF0000',
-        paddingBottom: 5
+        paddingBottom: hp('0.5%')
     },
     textInput: {
         flex: 1,
         marginTop: Platform.OS === 'android' ? 0 : -12,
-        paddingLeft: 10,
-        color: '#05375a',
+        paddingLeft: wp('2.5%'),
+        color: 'darkblue',
     },
     errorMsg: {
         color: '#FF0000',
@@ -341,25 +359,33 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: 15
+        marginTop: hp('1%')
     },
     signIn: {
-        width: '100%',
-        height: 40,
+        width: wp('90%'),
+        height: hp('5%'),
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10
     },
-    dp: {
-        width: 350,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        marginLeft: 10
-    },
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
+    },
+    textSign2: {
+        fontSize: 14,
+    },
+    text2: {
+        fontSize: 16,
+    },
+    icon: {
+        marginTop: hp('1.2%')
+    },
+    dp: {
+        width: wp('85%'),
+        height: hp('5%'),
+        justifyContent: 'center',
+        borderRadius: 10,
+        marginLeft: 10,
     }
   });

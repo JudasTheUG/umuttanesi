@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const axios = require('axios');
 
@@ -42,17 +43,19 @@ export default EarthQuakeScreen;
 const styles = StyleSheet.create({
   container: {
    flex: 1,
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+   backgroundColor:'floralwhite',
   },
   border: {
+    alignSelf:'center',
+    fontWeight:'bold',
     color:'black',
-    paddingLeft: 10,
-    borderColor: 'black',
+    paddingLeft: wp('5%'),
+    borderColor: 'darkblue',
     borderWidth: 1,
-    backgroundColor:'salmon',
+    backgroundColor:'yellow',
+    marginTop:hp('0.1%'),
+    marginBottom:hp('0.4%'),
+    width:wp('98%'),
+    borderRadius: 35,
   },
 });

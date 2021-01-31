@@ -63,12 +63,12 @@ const LoginScreen = ({navigation}) =>{
     }
 
     const sendLogin = () => {
-        axios.get('http://192.168.1.33/api/Users/Login?email='+data.email+'&password='+data.password)
+        axios.get('http://192.168.1.38/api/Users/Login?email='+data.email+'&password='+data.password)
         .then((response)=>{
             if(response.data==true){
-                axios.get('http://192.168.1.33/api/Users/getUserId?email='+data.email)
+                axios.get('http://192.168.1.38/api/Users/getUserId?email='+data.email)
                 .then((response)=>{
-                     axios.get('http://192.168.1.33/api/Users/getUserInfo/'+response.data)
+                     axios.get('http://192.168.1.38/api/Users/getUserInfo/'+response.data)
                     .then((response)=>{
                         ConstantClass.myId=response.data.userId
                         ConstantClass.userName = response.data.userName
@@ -90,6 +90,8 @@ const LoginScreen = ({navigation}) =>{
                     console.log(error)
                 })
 
+            }else{
+                Alert.alert('Hata!','Girilen email adresi veya şifre yanlış',[{text:'Tamam',onPress: ()=>null}])
             }
         })
         .catch((error) => {
@@ -123,6 +125,7 @@ const LoginScreen = ({navigation}) =>{
                     <TextInput
                         placeholder="E-mail adresiniz"
                         style={styles.textInput}
+                        keyboardType='email-address'
                         autoCapitalize="none"
                         onChangeText={(val) => textInputChange(val)}
                     />
@@ -151,6 +154,7 @@ const LoginScreen = ({navigation}) =>{
                         secureTextEntry={data.secureTextEntry ? true : false}
                         style={styles.textInput}
                         autoCapitalize="none"
+                        maxLength={8}
                         onChangeText={(val) => PasswordChangeHandler(val)}
                     />
                     <TouchableOpacity
@@ -182,17 +186,16 @@ const LoginScreen = ({navigation}) =>{
                 </TouchableOpacity>
                 </View>
                 <View style={styles.button}>
+                <TouchableOpacity
+                    onPress={sendLogin}
+                    >
                     <LinearGradient
                     colors={['orange','black']}
                     style={styles.signIn}
                     >
-                    <TouchableOpacity
-                    onPress={sendLogin}
-                    >
                     <Text style={[styles.textSign, {color:'#fff'}]}>Giriş Yap</Text>
-                    </TouchableOpacity>
-                        
                     </LinearGradient>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('SignUpScreen')}
                         style={[styles.signIn, {
