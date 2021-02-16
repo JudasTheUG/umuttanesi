@@ -114,7 +114,7 @@ const HelperScreen = ({navigation}) => {
                     
                 })
                 .then((response)=>{
-        
+                    Alert.alert('Başarılı','Lütfen eşleşme alanına geçip kontrol ediniz \nYardımınızın görünmemesi durumunda ilgili başlığa tıklayarak sayfayı yenileyebilirsiniz',[{text:'Tamam',onPress: ()=>null}])
                 })
                 .catch((error) => {
                     console.log(error)

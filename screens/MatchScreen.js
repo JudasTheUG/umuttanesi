@@ -80,7 +80,7 @@ import React,{useEffect} from 'react';
       var id = new Number(item.requestId);
       axios.get('http://192.168.1.38/api/Requests/GetDeleteRequest/'+id)
       .then((response)=>{
-        navigation.navigate('MaterialTopTabScreen',{ screen: 'MatchScreen' })
+        fetchRequestData()
         Alert.alert('Başarılı','İstek Kaldırıldı',[{text:'Tamam',onPress: ()=>null}])
       })
       .catch((error) => {
@@ -134,7 +134,7 @@ import React,{useEffect} from 'react';
             <StatusBar backgroundColor='orange' barStyle="light-content"/>
           <View style={styles.header}>
           {useEffect(()=>fetchRequestData(),[])}
-          <Text onPress={()=> navigation.navigate('MaterialTopTabScreen',{ screen: 'MatchScreen' })} style={styles.border2}>{"\n"} {'Benim Gönerdiğim/İstediğim Yardımlar'} {"\n"}</Text>
+          <Text onPress={()=> fetchRequestData()} style={styles.border2}>{"\n"} {'Benim Gönerdiğim/İstediğim Yardımlar'} {"\n"}</Text>
       {myData.userId!='' ?
       <FlatList
         data={myData}
@@ -158,7 +158,7 @@ import React,{useEffect} from 'react';
               animation="fadeInUp"
           >
       {useEffect(()=>fetchMatchData(),[])}
-      <Text onPress={()=> navigation.navigate('MaterialTopTabScreen',{ screen: 'MatchScreen' })} style={styles.border2}>{"\n"} {'Gönerdiğim/İstediğim İle Eşleşen Yardımlar'} {"\n"}</Text>
+      <Text onPress={()=> fetchMatchData()} style={styles.border2}>{"\n"} {'Gönerdiğim/İstediğim İle Eşleşen Yardımlar'} {"\n"}</Text>
       {matchData.userName!='' ?
       <FlatList
         data={matchData}

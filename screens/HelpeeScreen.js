@@ -81,7 +81,7 @@ const HelpeeScreen = ({navigation}) => {
     const [helpeeData, setHelpeeData] = React.useState({
       reqType: '',
       personCount: 0,
-      beginDate:new Date(),
+      beginDate: Moment(new Date()),
       endDate:'Bitiş Tarihi Seç',
       ceptelStatus: false,
       ibanStatus: false,
@@ -119,7 +119,7 @@ const HelpeeScreen = ({navigation}) => {
                     
                 })
                 .then((response)=>{
-        
+                    Alert.alert('Başarılı','Lütfen eşleşme alanına geçip kontrol ediniz \nTalebinizin görünmemesi durumunda ilgili başlığa tıklayarak sayfayı yenileyebilirsiniz',[{text:'Tamam',onPress: ()=>null}])
                 })
                 .catch((error) => {
                     console.log(error)
